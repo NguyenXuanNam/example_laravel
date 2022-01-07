@@ -20,10 +20,9 @@ class ProductInfoController extends Controller
         // Get list with paginate
         $productInfo = ProductInfo::orderBy('id', 'desc');
         if ($q = $request->input('q')) {
-            $productInfo->where('customer_phone', 'like', '%' . $q . '%')
-                ->orWhere('customer_name', 'like', '%' . $q . '%')
-                ->orWhere('customer_email', 'like', '%' . $q . '%')
-                ->orWhere('product_name', 'like', '%' . $q . '%');
+            $productInfo->where('customer_phone', '=', $q)
+                ->orWhere('customer_email', '=', $q)
+                ->orWhere('serial_number', '=', $q);
         }
         $productInfo = $productInfo->paginate(20);
         // Return view listing of the resource
@@ -51,6 +50,14 @@ class ProductInfoController extends Controller
     public function store(ProductInfoRequest $request)
     {
         try {
+            $productInfo = ProductInfo::create($request->all());
+            if ($productInfo) {
+                if ($request->input('create')) {
+                    return redirect()->route('create')->with('success', 'Created successfully.');
+                }
+                return redirect()->route('edit', $productInfo)->with('success', 'Created successfully.');
+            }
+            return redirect()->route('index');
         } catch (\Exception $e) {
             return $e->getMessage();
         }
@@ -87,6 +94,12 @@ class ProductInfoController extends Controller
     public function update(ProductInfoRequest $request, $id)
     {
         try {
+            $productInfo = ProductInfo::findOrFail($id);
+            $productInfo = $productInfo->update($request->all());
+            if ($productInfo) {
+                return redirect()->back()->with('success', 'Updated successfully.');
+            }
+            return redirect()->route('index');
         } catch (\Exception $e) {
             echo $e->getMessage();
         }
@@ -106,7 +119,7 @@ class ProductInfoController extends Controller
             if ($productInfo) {
                 $productInfo->delete();
             }
-            return redirect()->route('list')->with('success','Deleted successfully');
+            return redirect()->route('index')->with('success', 'Deleted successfully');
         } catch (\Exception $e) {
             echo $e->getMessage();
         }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -38,7 +39,7 @@ class ProductInfo extends Model
      * @var array
      */
     protected $fillable = [
-        'customer_name', 'customer_address', 'customer_phone', 'customer_email', 'product_name', 'serial_number', 'purchased_at', 'expired_at'
+        'customer_name', 'customer_address', 'customer_phone', 'customer_email', 'product_name', 'serial_number', 'purchased_at', 'expired_at', 'notes'
     ];
 
     /**
@@ -56,4 +57,22 @@ class ProductInfo extends Model
      * @var array
      */
     protected $hidden = [];
+
+    /**
+     * Get the purchased.
+     *
+     * @return string
+     */
+    public function getPurchasedAtAttribute() {
+        return $this->attributes['purchased_at'] ? (new Carbon($this->attributes['purchased_at']))->format('Y-m-d') : '';
+    }
+
+    /**
+     * Get the expired.
+     *
+     * @return string
+     */
+    public function getExpiredAtAttribute() {
+        return $this->attributes['expired_at'] ? (new Carbon($this->attributes['expired_at']))->format('Y-m-d') : '';
+    }
 }

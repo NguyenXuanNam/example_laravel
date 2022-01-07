@@ -17,13 +17,14 @@ class CreateProductInfoTable extends Migration
             Schema::create('product_info', function (Blueprint $table) {
                 $table->id();
                 $table->string('customer_name');
-                $table->string('customer_phone', 20)->nullable()->index();
+                $table->string('customer_phone', 20)->index();
                 $table->string('customer_email', 150)->nullable()->index();
                 $table->string('customer_address')->nullable();
                 $table->string('product_name')->index();
-                $table->string('serial_number')->nullable();
+                $table->string('serial_number')->nullable()->index();
                 $table->timestamp('purchased_at')->nullable();
                 $table->timestamp('expired_at')->nullable();
+                $table->text('notes')->nullable();
                 $table->timestamps();
             });
         }

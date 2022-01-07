@@ -27,6 +27,7 @@ class ProductInfoSeeder extends Seeder
                 'serial_number' => $faker->randomDigit,
                 'purchased_at' => Carbon::now()->subMinutes(rand(1, 55)),
                 'expired_at' => Carbon::now()->subMinutes(rand(1, 55)),
+                'notes' => Str::random(50)
             ]);
         }
     }

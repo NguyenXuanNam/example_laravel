@@ -19,13 +19,30 @@
     }
 @endphp
 <h3 class="fw-bold mb-3">{{ request()->route()->id ? 'Edit' : 'Create' }}</h3>
+@if($errors->any())
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {!! implode('', $errors->all('<div>:message</div>')) !!}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+@if(session()->has('success'))
+    <div class="alert alert-success">
+        {{ session()->get('success') }}
+    </div>
+@endif
 <form action="{{ request()->route()->id ? route('update', ['id' => request()->route()->id]) : route('store') }}" method="post" accept-charset="utf-8">
+    @csrf
+    @if (request()->route()->id)
+        @method('PUT')
+    @else
+        @method('POST')
+    @endif
     <div class="bg-light p-3 border mb-4">
         <div class="row">
             <div class="col-md-4">
                 <div class="mb-3">
                     <label for="customer_name" class="form-label">Customer name</label>
-                    <input type="text" name="customer_name" id="customer_name" class="form-control bg-white{{ $errors->has('name') ? ' is-invalid' : '' }}" value="{{ old_value('customer_name', $productInfo, 'customer_name') }}" />
+                    <input type="text" name="customer_name" id="customer_name" class="form-control bg-white{{ $errors->has('customer_name') ? ' is-invalid' : '' }}" value="{{ old_value('customer_name', $productInfo, 'customer_name') }}" />
                     @if ($errors->has('customer_name')) <div class="invalid-feedback">{{ $errors->first('customer_name') }}</div> @endif
                 </div>
             </div>
@@ -70,26 +87,31 @@
         <div class="col-md-6">
             <div class="mb-3">
                 <label for="purchased_at" class="form-label">Purchased</label>
-                <input type="text" name="purchased_at" id="purchased_at" class="form-control bg-white{{ $errors->has('purchased_at') ? ' is-invalid' : '' }}" value="{{ old_value('purchased_at', $productInfo, 'purchased_at') }}" />
+                <input type="date" name="purchased_at" id="purchased_at" class="form-control bg-white{{ $errors->has('purchased_at') ? ' is-invalid' : '' }}" value="{{ old_value('purchased_at', $productInfo, 'purchased_at') }}" />
                 @if ($errors->has('purchased_at')) <div class="invalid-feedback">{{ $errors->first('purchased_at') }}</div> @endif
             </div>
         </div>
         <div class="col-md-6">
             <div class="mb-3">
                 <label for="expired_at" class="form-label">Expired</label>
-                <input type="text" name="expired_at" id="expired_at" class="form-control bg-white{{ $errors->has('expired_at') ? ' is-invalid' : '' }}" value="{{ old_value('expired_at', $productInfo, 'expired_at') }}" />
+                <input type="date" name="expired_at" id="expired_at" class="form-control bg-white{{ $errors->has('expired_at') ? ' is-invalid' : '' }}" value="{{ old_value('expired_at', $productInfo, 'expired_at') }}" />
                 @if ($errors->has('expired_at')) <div class="invalid-feedback">{{ $errors->first('expired_at') }}</div> @endif
             </div>
         </div>
     </div>
+    <div class="mb-3">
+        <label for="notes" class="form-label">Notes</label>
+        <textarea name="notes" class="form-control bg-white{{ $errors->has('notes') ? ' is-invalid' : '' }}" rows="3">{{ old_value('notes', $productInfo, 'notes') }}</textarea>
+        @if ($errors->has('notes')) <div class="invalid-feedback">{{ $errors->first('notes') }}</div> @endif
+    </div>
     <div class="mt-2">
     @if (request()->route()->id)
         <button type="submit" class="btn btn-primary">Update</button>
-        <a href="{{ route('list') }}" class="btn btn-light">Cancel</a>
+        <a href="{{ route('index') }}" class="btn btn-light">Cancel</a>
     @else
         <button type="submit" class="btn btn-primary">Create</button>
-        <button type="submit" class="btn btn-secondary">Create and continue</button>
-        <a href="{{ route('list') }}" class="btn btn-light">Back</a>
+        <button type="submit" class="btn btn-secondary" name="create" value="continue">Create and continue</button>
+        <a href="{{ route('index') }}" class="btn btn-light">Back</a>
     @endif
     </div>
 </form>

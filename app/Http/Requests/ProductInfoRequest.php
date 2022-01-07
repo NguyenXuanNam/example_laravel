@@ -13,7 +13,7 @@ class ProductInfoRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -26,12 +26,13 @@ class ProductInfoRequest extends FormRequest
         return [
             'customer_name'    => 'required|alpha_dash|max:255',
             'customer_address' => 'nullable|string|max:250',
-            'customer_phone'   => 'nullable|numeric|digits_between:8,20',
-            'customer_email'   => 'nullable|email|unique:admins,email|:max:150',
+            'customer_phone'   => 'required|numeric|digits_between:8,16',
+            'customer_email'   => 'nullable|email|:max:150',
             'product_name'     => 'required|max:255',
             'serial_number'    => 'nullable|string|max:255',
             'purchased_at'     => 'nullable|date',
-            'expired_at'       => 'nullable|date'
+            'expired_at'       => 'nullable|date',
+            'notes'            => 'nullable',
         ];
     }
 }

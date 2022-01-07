@@ -15,9 +15,20 @@ use App\Http\Controllers\ProductInfoController;
 */
 
 Route::get('/', [ProductInfoController::class, 'index'])->name('index');
-Route::any('/list', [ProductInfoController::class, 'index'])->name('list');
-Route::get('/create', [ProductInfoController::class, 'create'])->name('create');
-Route::post('/create', [ProductInfoController::class, 'store'])->name('store');
-Route::get('/{id}/edit', [ProductInfoController::class, 'edit'])->name('edit')->where('id', '[0-9]+');
-Route::put('/{id}', [ProductInfoController::class, 'update'])->name('update')->where('id', '[0-9]+');
-Route::delete('/{id}', [ProductInfoController::class, 'destroy'])->name('destroy')->where('id', '[0-9]+');
+Route::get('/create', [ProductInfoController::class, 'create'])->name('create')->middleware('auth');
+Route::post('/create', [ProductInfoController::class, 'store'])->name('store')->middleware('auth');
+Route::get('/{id}/edit', [ProductInfoController::class, 'edit'])->name('edit')->where('id', '[0-9]+')->middleware('auth');
+Route::put('/{id}', [ProductInfoController::class, 'update'])->name('update')->where('id', '[0-9]+')->middleware('auth');
+Route::delete('/{id}', [ProductInfoController::class, 'destroy'])->name('destroy')->where('id', '[0-9]+')->middleware('auth');
+
+Route::prefix('admin')->group(function () {
+    Auth::routes([
+        'register' => false, // Registration Routes...
+        'reset' => false, // Password Reset Routes...
+        'verify' => false, // Email Verification Routes...
+    ]);
+    Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+});
+
+
+
